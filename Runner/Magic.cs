@@ -15,22 +15,26 @@ namespace Runner
     {
         private SpriteBatch spriteBatch;
         private Texture2D effect;
+        private Texture2D icon;
         private double time;
         private int shift;
         private int ticks;
         private int type;
+        private int id;
         private Point size;
         public bool active;
         private Vector2 position;
-        public Magic(int type)
+        public Magic(int type, int id)
         {
             this.type = type;
             SelectSpell();
+            this.id = id;
         }
 
-        public void Load(Texture2D _texture, SpriteBatch _spriteBatch)
+        public void Load(Texture2D _texture, Texture2D _icon, SpriteBatch _spriteBatch)
         {
             effect = _texture;
+            icon = _icon;
             spriteBatch = _spriteBatch;
             active = false;
         }
@@ -82,7 +86,7 @@ namespace Runner
             return 0;
         }
 
-        public void DrawSpell()
+        public void Draw(int type)
         {
             if (active)
             {
@@ -91,6 +95,13 @@ namespace Runner
                     new Rectangle(0, shift * size.Y, size.X, size.Y),
                     Color.White);
             }
+            Color iconColor = Color.Gray;
+            if (type == this.type)
+                iconColor = Color.White;
+            spriteBatch.Draw(icon,
+                        new Vector2(4 + 52 * id, 512 - 56),
+                        new Rectangle(0, 0, 48, 48),
+                        iconColor);
         }
         public void Cast()
         {

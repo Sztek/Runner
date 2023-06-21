@@ -19,6 +19,27 @@ namespace Runner
             //Move(dTime);
             if (isAlive || animation != frames - 1) { Animation(dTime); }
             position = new(160 - shift, position.Y);
+            if (state == 1 && shift >= 120)
+            {
+                state = 2;
+                speed = 1;
+                animation = 0;
+                switch (id)
+                {
+                    case 1:
+                        frames = 7;
+                        break;
+                    case 2:
+                        frames = 8;
+                        break;
+                }
+            }
+            if (state == 2 && animation == frames-1)
+            {
+                state = 0;
+                frames = 4;
+                animation = 0;
+            }
             if(shift >= 256)
             {
                 Spawn();
@@ -30,6 +51,14 @@ namespace Runner
             {
                 Die();
             }
+        }
+        public bool OnAttack()
+        {
+            if (isAlive && state == 2 && animation >= 4)
+            {
+                return true;
+            }
+            return false;
         }
         private void Spawn()
         {

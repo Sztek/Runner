@@ -53,7 +53,7 @@ namespace Runner
             background = new Background();
             for (int i = 0; i < spell.Length; i++)
             {
-                spell[i] = new Magic(i+1);
+                spell[i] = new Magic(i + 1, i);
                 //spell[i].SelectSpell(i);
             }
             timeToTick = 0;
@@ -72,13 +72,13 @@ namespace Runner
         {
             enemy.Load(Content.Load<Texture2D>("Enemy"), spriteBatch);
             background.Load(Content.Load<Texture2D>("background"),spriteBatch);
-            player.Load(Content.Load<Texture2D>("Bodyguard_Move"), spriteBatch);
+            player.Load(Content.Load<Texture2D>("Hero"), spriteBatch);
             //gameFont = Content.Load<SpriteFont>("gameFont");
             hud_bot = Content.Load<Texture2D>("hud_bottom");
             tile.Load(Content.Load<Texture2D>("ground"), spriteBatch);
-            spell[0].Load(Content.Load<Texture2D>("Water_Bubble"), spriteBatch);
-            spell[1].Load(Content.Load<Texture2D>("Fire_Incendiary"), spriteBatch);
-            spell[2].Load(Content.Load<Texture2D>("Lightning_II"), spriteBatch);
+            spell[0].Load(Content.Load<Texture2D>("Water_Bubble"), Content.Load<Texture2D>("icon1"), spriteBatch);
+            spell[1].Load(Content.Load<Texture2D>("Fire_Incendiary"), Content.Load<Texture2D>("icon2"), spriteBatch);
+            spell[2].Load(Content.Load<Texture2D>("Lightning_II"), Content.Load<Texture2D>("icon3"), spriteBatch);
         }
 
         protected override void Update(GameTime gameTime)
@@ -121,6 +121,7 @@ namespace Runner
                 tile.Move();
                 enemy.Move();
             }
+            player.GetHit(enemy.OnAttack());
             base.Update(gameTime);
         }
 
@@ -137,13 +138,13 @@ namespace Runner
             player.Draw();
 
             tile.DrawGrass();
-            var touchState = TouchPanel.GetState();
+
+            spriteBatch.Draw(hud_bot, new Vector2(0, gameResolution.Y - 64), new Rectangle(0, 0, 192, 64), Color.White);
+
             for (int i = 0; i < spell.Length; i++)
             {
-                spell[i].DrawSpell();
+                spell[i].Draw(enemy.GetDamageType());
             }
-            
-            spriteBatch.Draw(hud_bot,new Vector2(0, gameResolution.Y-64), new Rectangle(0, 0, 192, 64), Color.White);
 
             spriteBatch.End();
             GraphicsDevice.SetRenderTarget(null);
