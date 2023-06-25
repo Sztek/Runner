@@ -26,6 +26,9 @@ namespace Runner
                 animation = 0;
                 switch (id)
                 {
+                    case 0:
+                        frames = 8;
+                        break;
                     case 1:
                         frames = 7;
                         break;
@@ -60,7 +63,7 @@ namespace Runner
             }
             return false;
         }
-        private void Spawn()
+        public void Spawn()
         {
             shift -= 256;
             isAlive = true;

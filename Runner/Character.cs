@@ -10,7 +10,7 @@ namespace Runner
 {
     internal class Character : Object
     {
-        private bool isAlive;
+        public bool isAlive;
         public Character()
         {
             isAlive = true;
@@ -31,6 +31,18 @@ namespace Runner
                 animation = 0;
                 isAlive = false;
             }
+        }
+        public bool GameEnd()
+        {
+            if(!isAlive && position.X < -128)
+            {
+                isAlive = true;
+                state = 1;
+                frames = 6;
+                SetToOrigin(0);
+                return true;
+            }
+            return false;
         }
     }
 }

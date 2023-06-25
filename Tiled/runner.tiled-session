@@ -1,0 +1,43 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "bez nazwy.tmx",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+        "Overworld_Tileset.tsx": {
+            "scaleInDock": 1.5,
+            "scaleInEditor": 1
+        },
+        "bez nazwy.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 74.66666666666666,
+                "y": 284.33333333333337
+            }
+        }
+    },
+    "last.imagePath": "C:/Users/Kuba/Desktop/rpg-overworld-tileset v1.2 (wonderdot)",
+    "map.height": 32,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 10,
+    "openFiles": [
+        "Overworld_Tileset.tsx",
+        "bez nazwy.tmx"
+    ],
+    "project": "runner.tiled-project",
+    "recentFiles": [
+        "Overworld_Tileset.tsx",
+        "bez nazwy.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    }
+}

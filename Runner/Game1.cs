@@ -11,7 +11,7 @@ using static Android.Icu.Text.Transliterator;
 namespace Runner
 {
     public class Game1 : Game
-    {
+    { 
         Point gameResolution = new(160, 512);
         Point resolution;
         GraphicsDeviceManager graphics;
@@ -22,6 +22,8 @@ namespace Runner
         bool showDebug;
         Color colorDebug;
         double timeToTick;
+        bool pause;
+        TouchCollection lastState;
 
         Texture2D hud_bot;
 
@@ -30,6 +32,7 @@ namespace Runner
         Character player;
         Enemy enemy;
         Magic[] spell;
+        Menu menu;
 
         public Game1()
         {
@@ -43,13 +46,13 @@ namespace Runner
             graphics.SupportedOrientations = DisplayOrientation.Portrait;
             graphics.ApplyChanges();
         }
-
         protected override void Initialize()
         {
             tile = new Tile();
             player = new Character();
             enemy = new Enemy();
             spell = new Magic[3];
+            menu = new Menu();
             background = new Background();
             for (int i = 0; i < spell.Length; i++)
             {
@@ -57,6 +60,7 @@ namespace Runner
                 //spell[i].SelectSpell(i);
             }
             timeToTick = 0;
+            pause = true;
             player.SetToOrigin(0);
             enemy.SetToOrigin(1);
             resolution.X = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
@@ -67,9 +71,9 @@ namespace Runner
                 resolution.X, resolution.X/gameResolution.X*gameResolution.Y);
             base.Initialize();
         }
-
         protected override void LoadContent()
         {
+            menu.Load(Content.Load<Texture2D>("menu"), spriteBatch);
             enemy.Load(Content.Load<Texture2D>("Enemy"), spriteBatch);
             background.Load(Content.Load<Texture2D>("background"),spriteBatch);
             player.Load(Content.Load<Texture2D>("Hero"), spriteBatch);
@@ -80,70 +84,99 @@ namespace Runner
             spell[1].Load(Content.Load<Texture2D>("Fire_Incendiary"), Content.Load<Texture2D>("icon2"), spriteBatch);
             spell[2].Load(Content.Load<Texture2D>("Lightning_II"), Content.Load<Texture2D>("icon3"), spriteBatch);
         }
-
         protected override void Update(GameTime gameTime)
         {
             double dTime = gameTime.ElapsedGameTime.TotalMilliseconds;
             TouchCollection touchState = TouchPanel.GetState();
-            bool casting = false;
-            for (int i = 0; i < 3; i++)
+            if (pause)
             {
-                for (int j = 0; j < 3; j++) { if (spell[j].active) { casting = true; } }
-                if (!casting)
+                if (lastState.Count == 0)
                 {
                     foreach (var touch in touchState)
                     {
-                        if (new Rectangle(i * (resolution.X / 3), 0, resolution.X / 3, resolution.Y).Contains(touch.Position))
+                        if (new Rectangle(0, 0, resolution.X, resolution.Y).Contains(touch.Position))
                         {
-                            spell[i].Cast();
+                            pause = false;
                         }
                     }
                 }
             }
-            for (int i = 0; i < 3; i++)
+            else
             {
-                spell[i].Update(dTime);
-                if (spell[i].GetDamageType() != 0 &&
-                    (spell[i].GetDamageType() == enemy.GetDamageType() || enemy.GetDamageType() == 0) &&
-                    spell[i].GetRange() >= enemy.GetPosition())
+                bool casting = false;
+                for (int i = 0; i < 3; i++)
                 {
-                    enemy.OnHit();
+                    for (int j = 0; j < 3; j++) { if (spell[j].active) { casting = true; } }
+                    if (!casting && lastState.Count == 0 && player.isAlive)
+                    {
+                        foreach (var touch in touchState)
+                        {
+                            if (new Rectangle(i * (resolution.X / 3), 0, resolution.X / 3, resolution.Y).Contains(touch.Position))
+                            {
+                                spell[i].Cast();
+                            }
+                        }
+                    }
+                }
+                for (int i = 0; i < 3; i++)
+                {
+                    spell[i].Update(dTime);
+                    if (spell[i].GetDamageType() != 0 &&
+                        (spell[i].GetDamageType() == enemy.GetDamageType() || enemy.GetDamageType() == 0) &&
+                        spell[i].GetRange() >= enemy.GetPosition())
+                    {
+                        enemy.OnHit();
+                    }
+                }
+                enemy.Update(dTime);
+                background.Update(dTime);
+                player.Update(dTime);
+                tile.Update(dTime);
+                timeToTick += dTime;
+                if (timeToTick >= 20)
+                {
+                    timeToTick -= 20;
+                    tile.Move();
+                    enemy.Move();
+                }
+                player.GetHit(enemy.OnAttack());
+                if (player.GameEnd()) 
+                {
+                    pause = true;
+                    enemy.Spawn();
+                    enemy.SetToOrigin(1);
                 }
             }
-            enemy.Update(dTime);
-            background.Update(dTime);
-            player.Update(dTime);
-            tile.Update(dTime);
-            timeToTick += dTime;
-            if (timeToTick >= 20)
-            {
-                timeToTick -= 20;
-                tile.Move();
-                enemy.Move();
-            }
-            player.GetHit(enemy.OnAttack());
+            lastState = touchState;
             base.Update(gameTime);
         }
-
         protected override void Draw(GameTime gameTime)
         {
+            
             GraphicsDevice.SetRenderTarget(renderTarget);
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-            background.Draw();
-            tile.DrawGround();
-           
-            enemy.Draw();
-            player.Draw();
-
-            tile.DrawGrass();
-
-            spriteBatch.Draw(hud_bot, new Vector2(0, gameResolution.Y - 64), new Rectangle(0, 0, 192, 64), Color.White);
-
-            for (int i = 0; i < spell.Length; i++)
+            if (pause)
             {
-                spell[i].Draw(enemy.GetDamageType());
+                menu.Draw();
+            }
+            else
+            {
+                background.Draw();
+                tile.DrawGround();
+
+                enemy.Draw();
+                player.Draw();
+
+                tile.DrawGrass();
+
+                spriteBatch.Draw(hud_bot, new Vector2(0, gameResolution.Y - 64), new Rectangle(0, 0, 192, 64), Color.White);
+
+                for (int i = 0; i < spell.Length; i++)
+                {
+                    spell[i].Draw(enemy.GetDamageType());
+                }
             }
 
             spriteBatch.End();

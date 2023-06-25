@@ -16,6 +16,7 @@ namespace Runner
         private int[] positionX;
         private Vector2 size;
         private double[] timeToTick;
+        private int id;
 
         public void Load(Texture2D texture, SpriteBatch spriteBatch)
         {
@@ -26,6 +27,7 @@ namespace Runner
             this.timeToTick = new double[7];
             for (int i = 0; i < 7; i++) { positionX[i] = 0; timeToTick[i] = 0; }
             this.size = new Vector2(384, 216);
+            id = 0;
             
         }
         public void Update(double dTime)
@@ -46,7 +48,7 @@ namespace Runner
             
             for (int i = 6; i >= 0; i--)
             {
-                Rectangle rect = new(0, 216 * i, (int)size.X, (int)size.Y);
+                Rectangle rect = new(384 * id, 216 * i, (int)size.X, (int)size.Y);
                 if (i == 6)
                 {
                     spriteBatch.Draw(texture, new Vector2(positionX[i], positionY - 96), rect, Color.White);

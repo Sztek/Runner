@@ -24,7 +24,7 @@ namespace Runner
         protected Object()
         {
             time = 0;
-            timeToTick = 20;
+            timeToTick = 40;
             animation = 0;
             state = 0;
             id = 0;
