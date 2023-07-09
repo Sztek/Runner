@@ -17,6 +17,7 @@ namespace Runner
         private Vector2 size;
         private double[] timeToTick;
         private int id;
+        private int sky;
 
         public void Load(Texture2D texture, SpriteBatch spriteBatch)
         {
@@ -27,8 +28,25 @@ namespace Runner
             this.timeToTick = new double[7];
             for (int i = 0; i < 7; i++) { positionX[i] = 0; timeToTick[i] = 0; }
             this.size = new Vector2(384, 216);
-            id = 0;
-            
+            id = 2;
+            switch (id)
+            {
+                case 0:
+                    this.sky = 96;
+                    break;
+                case 1:
+                    this.sky = 8;
+                    break;
+                case 2:
+                    this.sky = 48;
+                    break;
+                case 3:
+                    this.sky = 0;
+                    break;
+                default:
+                    this.sky = 0;
+                    break;
+            }
         }
         public void Update(double dTime)
         {
@@ -51,8 +69,8 @@ namespace Runner
                 Rectangle rect = new(384 * id, 216 * i, (int)size.X, (int)size.Y);
                 if (i == 6)
                 {
-                    spriteBatch.Draw(texture, new Vector2(positionX[i], positionY - 96), rect, Color.White);
-                    spriteBatch.Draw(texture, new Vector2(positionX[i] + size.X, positionY - 96), rect, Color.White);
+                    spriteBatch.Draw(texture, new Vector2(positionX[i], positionY - sky), rect, Color.White);
+                    spriteBatch.Draw(texture, new Vector2(positionX[i] + size.X, positionY - sky), rect, Color.White);
                 }
                 else
                 {

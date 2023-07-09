@@ -18,6 +18,7 @@ namespace Runner
             shift = 0;
             next = new int[13];
             for (int i = 0; i < next.Length; i++) { next[i] = r.Next(0, 5); }
+            id = 2;
         }
 
         public override void Update(double dTime)
@@ -39,7 +40,7 @@ namespace Runner
             {
                 spriteBatch.Draw(texture,
                     new Vector2(i*16 - shift, 512 - 96),
-                    new Rectangle(16 * next[i], 4, 16, 32),
+                    new Rectangle(id*80 + 16 * next[i], 4, 16, 32),
                     Color.White);
             }
         }
@@ -49,7 +50,7 @@ namespace Runner
             {
                 spriteBatch.Draw(texture,
                 new Vector2(i * 16 - shift, 512 - 96 - 4),
-                new Rectangle(16 * next[i], 0, 16, 4),
+                new Rectangle(id * 80 + 16 * next[i], 0, 16, 4),
                 Color.White);
             }
         }

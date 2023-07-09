@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
     <PackageReference Include="MonoGame.Framework.Android" Version="3.8.1.303" />
+    <PackageReference Include="Xamarin.GooglePlayServices.Ads" Version="122.1.0.1" />
     <PackageReference Include="Xamarin.GooglePlayServices.Ads.Lite" Version="122.1.0.1" />
   </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">

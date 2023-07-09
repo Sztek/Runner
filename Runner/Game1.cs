@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using static Android.Icu.Text.Transliterator;
+using AdController;
 
 namespace Runner
 {
